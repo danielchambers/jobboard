@@ -1,0 +1,8 @@
+.DS_Store
+__pycache__/
+
+# Python virtual environment
+tasks/venv/
+
+# API and secret keys
+keys.sh
