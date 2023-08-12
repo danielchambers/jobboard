@@ -1,8 +1,15 @@
 .DS_Store
-__pycache__/
 
-# Python virtual environment
-tasks/venv/
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+application/venv/
 
 # API and secret keys
-keys.sh
+application/database/.env.dev
+application/celery-beat/.env.dev
+
+notes.txt
