@@ -1,19 +1,50 @@
 version: "3.8"
 services:
-  celery-beat:
+  api:
     build:
-      context: ./application/celery-beat
-      dockerfile: Dockerfile.dev
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - .:/app
+    ports:
+      - 8000:8000
+    env_file:
+      - .env.dev
     depends_on:
+      - redis
       - postgres
+
+  celeryworker:
+    build: .
+    command: celery -A main.celery worker --loglevel=info
     env_file:
-      - ./application/celery-beat/.env.dev
+      - .env.dev
+    depends_on:
+      - redis
+      - postgres
+
+  celerybeat:
+    build: .
+    command: celery -A main.celery beat --loglevel=info
+    env_file:
+      - .env.dev
+    depends_on:
+      - redis
+      - postgres
+
   postgres:
-    restart: always
     build:
-      context: ./application/database
+      context: ./postgresql
       dockerfile: Dockerfile.dev
-    expose:
-      - "5432:5432"
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
     env_file:
-      - ./application/database/.env.dev
+      - .env.dev
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+
+volumes:
+  postgres_data:

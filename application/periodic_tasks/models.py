@@ -1,8 +1,6 @@
 import datetime
 from sqlalchemy import Column, Integer, String, Boolean, TIMESTAMP
-from sqlalchemy.ext.declarative import declarative_base
-
-Base = declarative_base()
+from application.database import Base
 
 
 class GreenhouseCompany(Base):

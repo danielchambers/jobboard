@@ -1,3 +1,4 @@
+.vscode
 .DS_Store
 
 # Byte-compiled / optimized / DLL files
@@ -5,11 +6,14 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
 # Environments
-application/venv/
+venv/
 
 # API and secret keys
-application/database/.env.dev
-application/celery-beat/.env.dev
+.env.dev
 
 notes.txt
