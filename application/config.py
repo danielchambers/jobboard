@@ -13,9 +13,15 @@ class BaseConfig:
     CELERY_broker_url: str = os.getenv("CELERY_BROKER_URL")
     result_backend: str = os.getenv("CELERY_RESULT_BACKEND")
     CELERY_BEAT_SCHEDULE: dict = {
-        "task-schedule-work": {
-            "task": "application.periodic_tasks.main.test",
-            "schedule": 5.0,
+        "task-find-greenhouse-company-names": {
+            "task": "application.periodic_tasks.main.get_company_names",
+            "schedule": 3600.0,
+            'args': ('greenhouse', 'CA', 'fullstack developer'),
+        },
+        "task-find-lever-company-names": {
+            "task": "application.periodic_tasks.main.get_company_names",
+            "schedule": 3900.0,
+            'args': ('lever', 'CA', 'fullstack developer'),
         }
     }
 
