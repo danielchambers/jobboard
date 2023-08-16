@@ -17,3 +17,5 @@ venv/
 .env.dev
 
 notes.txt
+
+postgresql/setup.sql
