@@ -64,7 +64,7 @@ def parse_company_name(job_board: str, link: str) -> Optional[str]:
     return return_data
 
 
-def company_names(job_board: str, search_query: str) -> None:
+def get_company_names(job_board: str, search_query: str) -> None:
     """
     Perform the main job board company parsing and writing process.
 
