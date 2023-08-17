@@ -14,14 +14,18 @@ class BaseConfig:
     result_backend: str = os.getenv("CELERY_RESULT_BACKEND")
     CELERY_BEAT_SCHEDULE: dict = {
         "task-find-greenhouse-company-names": {
-            "task": "application.periodic_tasks.main.get_company_names",
+            "task": "application.periodic_tasks.main.company_names",
             "schedule": 3600.0,
             'args': ('greenhouse', 'CA', 'fullstack developer'),
         },
         "task-find-lever-company-names": {
-            "task": "application.periodic_tasks.main.get_company_names",
+            "task": "application.periodic_tasks.main.company_names",
             "schedule": 3900.0,
             'args': ('lever', 'CA', 'fullstack developer'),
+        },
+        "task-download-greenhouse-company-jobs": {
+            "task": "application.periodic_tasks.main.greenhouse_jobs",
+            "schedule": 1800.0
         }
     }
 
