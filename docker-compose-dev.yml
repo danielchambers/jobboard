@@ -16,7 +16,7 @@ services:
 
   celeryworker:
     build: .
-    command: celery -A main.celery worker --loglevel=info
+    command: watchfiles --filter python 'celery -A main.celery worker --loglevel=info'
     env_file:
       - .env.dev
     depends_on:
