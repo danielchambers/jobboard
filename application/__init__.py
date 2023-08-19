@@ -9,8 +9,11 @@ def create_app() -> FastAPI:
 
     from application.periodic_tasks import main
 
+    from application.v1.companies import companies_router
+    app.include_router(companies_router)
+
     @app.get("/")
     async def root():
-        return {"message": "Hello World"}
+        return {"message": "Hello World!"}
 
     return app
