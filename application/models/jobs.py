@@ -1,5 +1,6 @@
 import datetime
 from sqlalchemy import Column, Integer, String, Boolean, TIMESTAMP, ForeignKey
+from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from application.database import Base
 
@@ -10,8 +11,8 @@ class Company(Base):
     id = Column(Integer, primary_key=True)
     company = Column(String(75), unique=True)
     url = Column(String(150))
-    total_jobs = Column(Integer, default=0)
     platform = Column(String(100))
+    total_jobs = Column(Integer, default=0)
     found_date = Column(TIMESTAMP, default=func.now())
     is_active = Column(Boolean, default=True)
 
