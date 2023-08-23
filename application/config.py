@@ -15,17 +15,28 @@ class BaseConfig:
     CELERY_BEAT_SCHEDULE: dict = {
         "task-find-greenhouse-company-names": {
             "task": "application.periodic_tasks.main.company_names",
-            "schedule": 3600.0,
+            "schedule": 1500.0,
             'args': ('greenhouse', 'CA', 'fullstack developer'),
         },
         "task-find-lever-company-names": {
             "task": "application.periodic_tasks.main.company_names",
-            "schedule": 3900.0,
+            "schedule": 1500.0,
             'args': ('lever', 'CA', 'fullstack developer'),
         },
-        "task-download-greenhouse-company-jobs": {
-            "task": "application.periodic_tasks.main.greenhouse_jobs",
-            "schedule": 1800.0
+        "task-find-careerpuck-company-names": {
+            "task": "application.periodic_tasks.main.company_names",
+            "schedule": 1500.0,
+            'args': ('careerpuck', 'CA', 'fullstack developer'),
+        },
+        "task-find-ashbyhq-company-names": {
+            "task": "application.periodic_tasks.main.company_names",
+            "schedule": 1500.0,
+            'args': ('ashbyhq', 'CA', 'python'),
+        },
+        "task-find-myworkdayjobs-company-names": {
+            "task": "application.periodic_tasks.main.company_names",
+            "schedule": 1500.0,
+            'args': ('myworkdayjobs', 'CA', 'python'),
         }
     }
 
