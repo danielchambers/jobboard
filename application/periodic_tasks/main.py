@@ -55,11 +55,10 @@ def company_names(job_platform, location, job_title):
         results.extend(links)
         page_index += page_results
 
-    # print(results)
     company_finder = CompanyFinder(job_platform, PLATFORMS.get(job_platform))
     companies = company_finder.parse(results)
-    for company in companies:
-        print(company)
+    with database_context() as db:
+        db.add_all([Company(**company) for company in companies])
 
 
 # @shared_task
