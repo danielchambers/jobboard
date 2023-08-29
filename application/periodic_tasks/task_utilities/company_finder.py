@@ -57,7 +57,7 @@ class CompanyFinder:
             if company_name not in self.unique_companies:
                 company_url = url_format.format(company_name)
                 self.companies.append({
-                    'name': company_name,
+                    'company': company_name,
                     'url': company_url,
                     'platform': self.platform
                 })
@@ -84,7 +84,7 @@ class CompanyFinder:
                         company_uri=company_uri
                     )
                     self.companies.append(
-                        {'name': company_name, 'url': json_url, 'platform': self.platform})
+                        {'company': company_name, 'url': json_url, 'platform': self.platform})
                     self.unique_companies.add(company_name)
         except (AttributeError, IndexError, re.error) as err:
             print(f"Error processing MyWorkDayJobs link: {err}")
