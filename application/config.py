@@ -6,9 +6,7 @@ class BaseConfig:
     POSTGRES_USER: str = os.getenv('POSTGRES_USER')
     POSTGRES_PASSWORD: str = os.getenv('POSTGRES_PASSWORD')
     POSTGRES_DATABASE: str = os.getenv('POSTGRES_DATABASE')
-    DATABASE_CONNECT_DICT: dict = {
-        "check_same_thread": False
-    }
+    # DATABASE_CONNECT_DICT: dict = {"check_same_thread": False}
 
     CELERY_broker_url: str = os.getenv("CELERY_BROKER_URL")
     result_backend: str = os.getenv("CELERY_RESULT_BACKEND")
@@ -50,7 +48,8 @@ class ProductionConfig(BaseConfig):
 
 
 class TestingConfig(BaseConfig):
-    pass
+    DATABASE_URL: str = "sqlite:///./test.db"
+    DATABASE_CONNECT_DICT: dict = {"check_same_thread": False}
 
 
 @lru_cache()
@@ -61,7 +60,7 @@ def get_settings():
         "testing": TestingConfig
     }
 
-    config_name = os.getenv("FASTAPI_CONFIG")
+    config_name = os.getenv("FASTAPI_CONFIG", 'development')
     configuration = config_class[config_name]
     return configuration()
 
