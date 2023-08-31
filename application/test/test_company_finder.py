@@ -52,10 +52,10 @@ def test_generic_parse_valid_links(generic_company_finder):
     ]
     companies = generic_company_finder.parse(links)
     assert len(companies) == 4
-    assert companies[0]['name'] == "florenceeu"
-    assert companies[1]['name'] == "theroom"
-    assert companies[2]['name'] == "inworldai"
-    assert companies[3]['name'] == "mercury"
+    assert companies[0]['company'] == "florenceeu"
+    assert companies[1]['company'] == "theroom"
+    assert companies[2]['company'] == "inworldai"
+    assert companies[3]['company'] == "mercury"
 
 
 def test_generic_parse_invalid_links(generic_company_finder):
@@ -65,7 +65,7 @@ def test_generic_parse_invalid_links(generic_company_finder):
     ]
     companies = generic_company_finder.parse(links)
     assert len(companies) == 1
-    assert companies[0]['name'] == "florenceeu"
+    assert companies[0]['company'] == "florenceeu"
     assert companies[0]['url'] == "https://boards-api.greenhouse.io/v1/boards/florenceeu/jobs/"
     assert companies[0]['platform'] == "greenhouse"
 
@@ -77,7 +77,7 @@ def test_process_company_match(generic_company_finder):
     assert match
     generic_company_finder._process_company_match(match, config['url_format'])
     assert len(generic_company_finder.companies) == 1
-    assert generic_company_finder.companies[0]['name'] == "florenceeu"
+    assert generic_company_finder.companies[0]['company'] == "florenceeu"
     assert generic_company_finder.companies[0]['url'] == "https://boards-api.greenhouse.io/v1/boards/florenceeu/jobs/"
     assert generic_company_finder.companies[0]['platform'] == "greenhouse"
 
@@ -90,7 +90,7 @@ def test_process_myworkdayjob_match(myworkdayjobs_company_finder):
     myworkdayjobs_company_finder._process_myworkdayjob_match(match)
     assert len(myworkdayjobs_company_finder.companies) == 1
     print(myworkdayjobs_company_finder.companies)
-    assert myworkdayjobs_company_finder.companies[0]['name'] == "nvidia"
+    assert myworkdayjobs_company_finder.companies[0]['company'] == "nvidia"
     assert myworkdayjobs_company_finder.companies[0][
         'url'] == "https://nvidia.wd5.myworkdayjobs.com/wday/cxs/nvidia/NVIDIAExternalCareerSite/jobs"
     assert myworkdayjobs_company_finder.companies[0]['platform'] == "myworkdayjobs"
