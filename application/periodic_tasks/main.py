@@ -51,7 +51,7 @@ def company_names(job_platform, location, job_title):
         if search_results.get('items') is None:
             break
         items = search_results.get('items')
-        links = [item['link'] for item in items if items]
+        links = [item['link'].lower() for item in items if items]
         results.extend(links)
         page_index += page_results
 

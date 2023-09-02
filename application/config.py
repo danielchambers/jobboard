@@ -9,27 +9,27 @@ class BaseConfig:
         "task-find-greenhouse-company-names": {
             "task": "application.periodic_tasks.main.company_names",
             "schedule": 1500.0,
-            'args': ('greenhouse', 'CA', 'fullstack developer'),
+            'args': ('greenhouse', 'CA', 'javascript'),
         },
         "task-find-lever-company-names": {
             "task": "application.periodic_tasks.main.company_names",
             "schedule": 1500.0,
-            'args': ('lever', 'CA', 'fullstack developer'),
+            'args': ('lever', 'CA', 'javascript'),
         },
         "task-find-careerpuck-company-names": {
             "task": "application.periodic_tasks.main.company_names",
             "schedule": 1500.0,
-            'args': ('careerpuck', 'CA', 'fullstack developer'),
+            'args': ('careerpuck', 'CA', 'javascript'),
         },
         "task-find-ashbyhq-company-names": {
             "task": "application.periodic_tasks.main.company_names",
             "schedule": 1500.0,
-            'args': ('ashbyhq', 'CA', 'python'),
+            'args': ('ashbyhq', 'CA', 'javascript'),
         },
         "task-find-myworkdayjobs-company-names": {
             "task": "application.periodic_tasks.main.company_names",
             "schedule": 1500.0,
-            'args': ('myworkdayjobs', 'CA', 'python'),
+            'args': ('myworkdayjobs', 'CA', 'javascript'),
         }
     }
 
