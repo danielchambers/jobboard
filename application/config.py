@@ -3,11 +3,6 @@ from functools import lru_cache
 
 
 class BaseConfig:
-    POSTGRES_USER: str = os.getenv('POSTGRES_USER')
-    POSTGRES_PASSWORD: str = os.getenv('POSTGRES_PASSWORD')
-    POSTGRES_DATABASE: str = os.getenv('POSTGRES_DATABASE')
-    # DATABASE_CONNECT_DICT: dict = {"check_same_thread": False}
-
     CELERY_broker_url: str = os.getenv("CELERY_BROKER_URL")
     result_backend: str = os.getenv("CELERY_RESULT_BACKEND")
     CELERY_BEAT_SCHEDULE: dict = {
@@ -40,11 +35,18 @@ class BaseConfig:
 
 
 class DevelopmentConfig(BaseConfig):
-    pass
+    POSTGRES_USER: str = os.getenv('POSTGRES_USER')
+    POSTGRES_PASSWORD: str = os.getenv('POSTGRES_PASSWORD')
+    POSTGRES_DATABASE: str = os.getenv('POSTGRES_DATABASE')
+    DATABASE_CONNECT_DICT: dict = {"check_same_thread": False}
+    DATABASE_URL: str = f"postgresql://{os.getenv('POSTGRES_USER')}:{os.getenv('POSTGRES_PASSWORD')}@postgres:5432/{os.getenv('POSTGRES_DATABASE')}"
 
 
 class ProductionConfig(BaseConfig):
-    pass
+    POSTGRES_USER: str = os.getenv('POSTGRES_USER')
+    POSTGRES_PASSWORD: str = os.getenv('POSTGRES_PASSWORD')
+    POSTGRES_DATABASE: str = os.getenv('POSTGRES_DATABASE')
+    DATABASE_CONNECT_DICT: dict = {"check_same_thread": False}
 
 
 class TestingConfig(BaseConfig):
