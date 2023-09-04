@@ -1,35 +1,41 @@
 import os
 from functools import lru_cache
+from celery.schedules import crontab
 
 
 class BaseConfig:
     CELERY_broker_url: str = os.getenv("CELERY_BROKER_URL")
     result_backend: str = os.getenv("CELERY_RESULT_BACKEND")
+    CELERY_TIMEZONE = 'America/Los_Angeles'
     CELERY_BEAT_SCHEDULE: dict = {
         "task-find-greenhouse-company-names": {
             "task": "application.periodic_tasks.main.company_names",
-            "schedule": 1500.0,
-            'args': ('greenhouse', 'CA', 'javascript'),
+            "schedule": 3600.0,  # 60 minutes
+            'args': ['greenhouse', 'CA', 'javascript'],
         },
         "task-find-lever-company-names": {
             "task": "application.periodic_tasks.main.company_names",
-            "schedule": 1500.0,
-            'args': ('lever', 'CA', 'javascript'),
+            "schedule": 4200.0,  # 70 minutes
+            'args': ['lever', 'CA', 'javascript'],
         },
         "task-find-careerpuck-company-names": {
             "task": "application.periodic_tasks.main.company_names",
-            "schedule": 1500.0,
-            'args': ('careerpuck', 'CA', 'javascript'),
+            "schedule": 4800.0,  # 80 minutes
+            'args': ['careerpuck', 'CA', 'javascript'],
         },
         "task-find-ashbyhq-company-names": {
             "task": "application.periodic_tasks.main.company_names",
-            "schedule": 1500.0,
-            'args': ('ashbyhq', 'CA', 'javascript'),
+            "schedule": 5400.0,  # 90 minutes
+            'args': ['ashbyhq', 'CA', 'javascript'],
         },
         "task-find-myworkdayjobs-company-names": {
             "task": "application.periodic_tasks.main.company_names",
-            "schedule": 1500.0,
-            'args': ('myworkdayjobs', 'CA', 'javascript'),
+            "schedule": 6000.0,  # 100 minutes
+            'args': ['myworkdayjobs', 'CA', 'javascript'],
+        },
+        "task-get-company-jobs": {
+            "task": "application.periodic_tasks.main.collect_jobs",
+            "schedule": crontab(hour=1, minute=53),
         }
     }
 
