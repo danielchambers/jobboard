@@ -1,10 +1,15 @@
 import redis
-from celery import shared_task
-from sqlalchemy.exc import IntegrityError
+import logging
+from celery import shared_task, current_task
 from application.database import database_context
 from application.models.jobs import Company
 from application.periodic_tasks.task_utilities.company_finder import CompanyFinder
+from application.periodic_tasks.task_utilities.company_jobs import Job
 from application.periodic_tasks.task_utilities.google_search import GoogleSearch
+
+import requests
+logging.basicConfig(level=logging.INFO)
+redis_client = redis.Redis(host='redis', port=6379, db=1)
 
 
 @shared_task
@@ -40,7 +45,7 @@ def company_names(job_platform, location, job_title):
 
     results = []
     page_index = 1
-    page_results = 10
+    page_results = 50
     query = PLATFORMS.get(job_platform).get(
         'search_query').format(f'{location} AND {job_title}')
 
@@ -61,33 +66,33 @@ def company_names(job_platform, location, job_title):
         db.add_all([Company(**company) for company in companies])
 
 
-# @shared_task
-# def greenhouse_jobs():
-#     redis_client = redis.Redis(host='redis', port=6379, db=2)
-#     page_size = 10  # Adjust page size if needed
-#     page_number = 1
+@shared_task
+def collect_jobs():
+    last_page = int(redis_client.get('last_page') or 1)
+    page_size = 10
+    offset = (last_page - 1) * page_size
 
-#     if redis_client.exists('greenhouse_company_page_number'):
-#         page_number = int(redis_client.get('greenhouse_company_page_number'))
+    with database_context() as db:
+        records = db.query(Company).filter_by(
+            platform='greenhouse').offset(offset).limit(page_size).all()
 
-#     with get_db() as db:
-#         offset = (page_number - 1) * page_size
-#         companies = db.query(Company).limit(
-#             page_size).offset(offset).all()
-#         redis_client.set('greenhouse_company_page_number', page_number + 1)
+        for record in records:
+            print(f'{record.company} -{record.platform} - {record.url}')
+            if record.platform == 'greenhouse':
+                response = requests.get(record.url)
+                total_jobs = response.json()['meta']['total']
+                print(total_jobs)
+                print('========================================')
+                jobs = response.json()['jobs']
+                for job in jobs:
+                    job = Job(record.company, job['id'], job['title'],
+                              job['location']['name'], job['updated_at'], job['absolute_url'])
+                    print(job.data())
 
-#     for company in companies:
-#         logger.info(f"Fetching jobs for {company.identifier}")
-#         listing = get_greenhouse_jobs(company.identifier)
-#         jobs = listing['jobs']
-#         total_jobs = listing['meta']['total']
-#         logger.info(f"Total jobs: {total_jobs}")
+    if len(records) < page_size:
+        last_page = 1
+    else:
+        last_page += 1
+        current_task.apply_async(countdown=60)
 
-#         if total_jobs > 0:
-#             with get_db() as db:
-#                 for job in jobs:
-#                     new_job_data = parse_greenhouse_job(company.id, job)
-#                     new_job = GreenhouseJob(**new_job_data)
-#                     db.add(new_job)
-#                 logger.info(
-#                     f"Inserted {len(jobs)} jobs for {company.identifier}")
+    redis_client.set('last_page', last_page)
