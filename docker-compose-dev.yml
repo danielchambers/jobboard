@@ -33,6 +33,7 @@ services:
       - postgres
 
   postgres:
+    image: postgres:15.0
     build:
       context: ./postgresql
       dockerfile: Dockerfile.dev
