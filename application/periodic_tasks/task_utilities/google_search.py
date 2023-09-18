@@ -8,6 +8,7 @@ class GoogleSearch:
     def search(query: str, start_index: int = 1, num_results: int = 10) -> Optional[Dict[str, Any]]:
         """
         Search Google using the Custom Search API.
+        https://developers.google.com/custom-search/v1/reference/rest/v1/cse/list
 
         Args:
             query: The search query.
@@ -23,6 +24,7 @@ class GoogleSearch:
             'q': query,
             'start': start_index,
             'num': num_results,
+            'dateRestrict': 'd30'
         }
 
         try:
