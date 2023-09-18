@@ -42,16 +42,16 @@ class Company(Base):
     __tablename__ = 'companies'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    company = Column(String(75))
+    name = Column(String(75))
     url = Column(String(150))
     total_jobs = Column(Integer, default=0)
     platform = Column(String(100))
     found_date = Column(TIMESTAMP, default=func.now())
     is_active = Column(Boolean, default=True)
 
-    # Define a unique constraint
+    # Define a unique constraint using 'name' instead of 'company'
     __table_args__ = (
-        (UniqueConstraint('company', 'platform', name='uq_company_platform')),
+        (UniqueConstraint('name', 'platform', name='uq_company_platform')),
     )
 
     # Establish a one-to-many relationship with the "jobs" table
@@ -65,9 +65,9 @@ class Job(Base):
     company_id = Column(Integer, ForeignKey('companies.id'))
     job_id = Column(String(100))
     title = Column(String(255))
-    country = Column(String(100))
-    state = Column(String(100))
-    city = Column(String(100))
+    country = Column(ARRAY(String(255)))
+    state = Column(ARRAY(String(255)))
+    city = Column(ARRAY(String(255)))
     is_remote = Column(Boolean, default=False)
     is_hybrid = Column(Boolean, default=False)
     is_onsite = Column(Boolean, default=True)
