@@ -16,6 +16,9 @@ services:
 
   celeryworker:
     build: .
+    restart: always
+    volumes:
+      - .:/app
     command: watchfiles --filter python 'celery -A main.celery worker --loglevel=info'
     env_file:
       - .env.dev
@@ -25,7 +28,11 @@ services:
 
   celerybeat:
     build: .
-    command: celery -A main.celery beat --loglevel=info
+    restart: always
+    volumes:
+      - .:/app
+    # command: celery -A main.celery beat --loglevel=info
+    command: watchfiles --filter python 'celery -A main.celery beat --loglevel=info'
     env_file:
       - .env.dev
     depends_on:
