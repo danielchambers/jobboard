@@ -1,6 +1,7 @@
 import datetime
 # from sqlalchemy import Column, Integer, String, Boolean, TIMESTAMP, ForeignKey
 from sqlalchemy import Column, Integer, String, Boolean, Numeric, DateTime, ARRAY, TIMESTAMP, ForeignKey, UniqueConstraint
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from application.database import Base
@@ -70,9 +71,8 @@ class Job(Base):
     city = Column(ARRAY(String(255)))
     is_remote = Column(Boolean, default=False)
     is_hybrid = Column(Boolean, default=False)
-    is_onsite = Column(Boolean, default=True)
-    salary_low = Column(Numeric)
-    salary_high = Column(Numeric)
+    is_onsite = Column(Boolean, default=False)
+    salary = Column(JSONB)
     keywords = Column(ARRAY(String(255)))
     updated_at = Column(DateTime)
     url = Column(String(255))
