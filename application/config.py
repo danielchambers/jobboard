@@ -9,33 +9,35 @@ class BaseConfig:
     CELERY_TIMEZONE = 'America/Los_Angeles'
     CELERY_BEAT_SCHEDULE: dict = {
         "task-find-greenhouse-company-names": {
-            "task": "application.periodic_tasks.main.company_names",
-            "schedule": 3600.0,  # 60 minutes
-            'args': ['greenhouse', 'CA', 'javascript'],
+            "task": "application.periodic_tasks.main.collect_companies",
+            "schedule": 40000.0,  # 60 minutes
+            'args': ['greenhouse', 'Los Angeles python', 'm1'],
         },
         "task-find-lever-company-names": {
-            "task": "application.periodic_tasks.main.company_names",
-            "schedule": 4200.0,  # 70 minutes
-            'args': ['lever', 'CA', 'javascript'],
+            "task": "application.periodic_tasks.main.collect_companies",
+            "schedule": 42000.0,  # 70 minutes
+            'args': ['lever', 'Los Angeles python', 'm1'],
         },
         "task-find-careerpuck-company-names": {
-            "task": "application.periodic_tasks.main.company_names",
-            "schedule": 4800.0,  # 80 minutes
-            'args': ['careerpuck', 'CA', 'javascript'],
+            "task": "application.periodic_tasks.main.collect_companies",
+            "schedule": 48000.0,  # 80 minutes
+            'args': ['careerpuck', 'Los Angeles python', 'm1'],
         },
         "task-find-ashbyhq-company-names": {
-            "task": "application.periodic_tasks.main.company_names",
-            "schedule": 5400.0,  # 90 minutes
-            'args': ['ashbyhq', 'CA', 'javascript'],
+            "task": "application.periodic_tasks.main.collect_companies",
+            "schedule": 54000.0,  # 90 minutes
+            'args': ['ashbyhq', 'Los Angeles python', 'm1'],
         },
         "task-find-myworkdayjobs-company-names": {
-            "task": "application.periodic_tasks.main.company_names",
-            "schedule": 6000.0,  # 100 minutes
-            'args': ['myworkdayjobs', 'CA', 'javascript'],
+            "task": "application.periodic_tasks.main.collect_companies",
+            "schedule": 60000.0,  # 100 minutes
+            'args': ['myworkdayjobs', 'Los Angeles python', 'm1'],
         },
         "task-get-company-jobs": {
             "task": "application.periodic_tasks.main.collect_jobs",
-            "schedule": crontab(hour=1, minute=53),
+            "schedule": crontab(hour=16, minute=46),
+            # "schedule": 60.0,
+            "args": ["lever"]
         }
     }
 
