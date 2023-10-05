@@ -5,7 +5,7 @@ from typing import List, Dict, Union, Any, Optional
 
 class GoogleSearch:
     @staticmethod
-    def search(query: str, start_index: int = 1, num_results: int = 10) -> Optional[Dict[str, Any]]:
+    def search(query: str, start_index: int = 1, num_results: int = 10, date_restrict='d30') -> Optional[Dict[str, Any]]:
         """
         Search Google using the Custom Search API.
         https://developers.google.com/custom-search/v1/reference/rest/v1/cse/list
@@ -24,7 +24,7 @@ class GoogleSearch:
             'q': query,
             'start': start_index,
             'num': num_results,
-            'dateRestrict': 'd30'
+            'dateRestrict': date_restrict
         }
 
         try:
