@@ -21,3 +21,4 @@ venv/
 notes.txt
 
 postgresql/setup.sql
+application/periodic_tasks/task_utilities/uscities.csv
