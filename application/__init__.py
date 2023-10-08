@@ -11,8 +11,10 @@ def create_app() -> FastAPI:
 
     from application.v1.companies import companies_router
     from application.v1.jobs import jobs_router
+    from application.users import users_router
     app.include_router(companies_router)
     app.include_router(jobs_router)
+    app.include_router(users_router)
 
     @app.get("/")
     async def root():
