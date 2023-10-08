@@ -20,7 +20,7 @@ def return_all_company_names(
 
         if q:
             filtered_query = query_base.filter(
-                or_(Company.company == q, Company.company.ilike(f"%{q}%")))
+                or_(Company.name == q, Company.name.ilike(f"%{q}%")))
         else:
             filtered_query = query_base
         offset = (page - 1) * limit if page > 0 else 0
@@ -37,7 +37,7 @@ def return_all_company_names(
 @companies_router.get('/{company}')
 def return_one_company_name(company):
     with database_context() as db:
-        records = db.query(Company).filter_by(company=company).all()
+        records = db.query(Company).filter_by(name=company).all()
 
         if not records:
             raise HTTPException(status_code=404, detail="Company not found")
