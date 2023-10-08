@@ -1,9 +1,8 @@
-import datetime
-# from sqlalchemy import Column, Integer, String, Boolean, TIMESTAMP, ForeignKey
-from sqlalchemy import Column, Integer, String, Boolean, Numeric, DateTime, ARRAY, TIMESTAMP, ForeignKey, UniqueConstraint
-from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.sql import func
+from sqlalchemy import Column, Integer, String, Boolean, ARRAY, DateTime, func, ForeignKey
 from sqlalchemy.orm import relationship
+from sqlalchemy.dialects.postgresql import TSVECTOR, JSONB
+from sqlalchemy.schema import UniqueConstraint
+from datetime import datetime
 from application.database import Base
 
 
@@ -47,7 +46,7 @@ class Company(Base):
     url = Column(String(150))
     total_jobs = Column(Integer, default=0)
     platform = Column(String(100))
-    found_date = Column(TIMESTAMP, default=func.now())
+    found_date = Column(DateTime, default=datetime.now)
     is_active = Column(Boolean, default=True)
 
     # Define a unique constraint using 'name' instead of 'company'
@@ -72,10 +71,11 @@ class Job(Base):
     is_remote = Column(Boolean, default=False)
     is_hybrid = Column(Boolean, default=False)
     is_onsite = Column(Boolean, default=False)
-    salary = Column(JSONB)
+    salary = Column(JSONB, nullable=True)
     keywords = Column(ARRAY(String(255)))
     updated_at = Column(DateTime)
     url = Column(String(255))
+    title_vector = Column(TSVECTOR)
 
     # Establish a many-to-one relationship with the "companies" table
     company = relationship('Company', back_populates='jobs')
