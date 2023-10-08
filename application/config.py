@@ -35,7 +35,7 @@ class BaseConfig:
         },
         "task-get-company-jobs": {
             "task": "application.periodic_tasks.main.collect_jobs",
-            "schedule": crontab(hour=16, minute=46),
+            "schedule": crontab(hour=21, minute=27),
             # "schedule": 60.0,
             "args": ["lever"]
         }
