@@ -17,7 +17,7 @@ def company_to_dict(company: Company) -> Dict[str, str]:
     """
     return {
         "id": company.id,
-        "company": company.company,
+        "company": company.name,
         "url": company.url,
         "platform": company.platform,
         "total_jobs": company.total_jobs,
