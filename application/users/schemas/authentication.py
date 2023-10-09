@@ -1,13 +1,13 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr, constr
 
 
 class UserLogin(BaseModel):
-    email: str
-    password: str
+    email: EmailStr
+    password: constr(min_length=6)
 
 
 class UserRegistration(BaseModel):
-    firstname: str
-    lastname: str
-    email: str
-    password: str
+    firstname: constr(min_length=2, max_length=50)
+    lastname: constr(min_length=2, max_length=50)
+    email: EmailStr
+    password: constr(min_length=6)
