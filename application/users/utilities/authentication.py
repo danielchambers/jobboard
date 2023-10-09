@@ -88,7 +88,7 @@ def create_access_token(data: dict, expires_delta: timedelta = None) -> str:
     return encoded_jwt
 
 
-def decode_access_token(token: str):
+def decode_access_token(token: str) -> Optional[Dict[str, str]]:
     """
     Decode and verify an access token.
 
