@@ -88,6 +88,25 @@ def create_access_token(data: dict, expires_delta: timedelta = None) -> str:
     return encoded_jwt
 
 
+def decode_access_token(token: str):
+    """
+    Decode and verify an access token.
+
+    Args:
+        token (str): JWT access token.
+
+    Returns:
+        dict: Decoded token payload if valid, None if invalid or expired.
+    """
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return payload
+    except jwt.ExpiredSignatureError:
+        return None  # Token has expired
+    except jwt.DecodeError:
+        return None  # Token is invalid
+
+
 def authenticate_user(email: str, password: str) -> Union[Dict[str, Union[str, int]], bool]:
     """
     Authenticate a user by email and password.
