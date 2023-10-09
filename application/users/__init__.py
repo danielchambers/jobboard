@@ -1,5 +1,5 @@
 import os
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from datetime import timedelta
 from application.database import database_context
 from application.models.user import User
@@ -8,17 +8,14 @@ from application.users.utilities.authentication import (
     create_access_token,
     authenticate_user,
     get_user,
-    hash_password
+    hash_password,
+    authorize_user,
+    authorize_member
 )
+
 
 JWT_ACCESS_EXPIRE = os.getenv('JWT_ACCESS_TOKEN_EXPIRE')
 users_router = APIRouter(prefix='/user')
-
-
-@users_router.post("/test")
-async def test_user():
-
-    return {'test': 'asd'}
 
 
 @users_router.post("/register")
@@ -50,7 +47,6 @@ async def register_user(user_data: UserRegistration):
     jwt_data = {
         'sub': user_data.email,
         'iss': 'api:register',
-        'aud': 'browser',
         'staff': False,
         'member': False,
         'basic': True
@@ -80,7 +76,6 @@ async def login_user(user_data: UserLogin):
     jwt_data = {
         'sub': valid_user['email'],
         'iss': 'api:login',
-        'aud': 'browser',
         'staff': valid_user['is_staff'],
         'member': valid_user['is_member'],
         'basic': valid_user['is_basic'],
@@ -88,3 +83,13 @@ async def login_user(user_data: UserLogin):
     jwt_expiration = timedelta(minutes=30)
     access_token = create_access_token(jwt_data, jwt_expiration)
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+@users_router.get("/test")
+async def secure_test(current_user: dict = Depends(authorize_user)):
+    return {"message": "This is a secured route for users", "user": current_user}
+
+
+@users_router.get("/test2")
+async def secure_test2(current_user: dict = Depends(authorize_member)):
+    return {"message": "This is a secured route for members", "member": current_user}
