@@ -66,7 +66,17 @@ def get_user(email: str) -> Optional[Dict[str, Union[str, int]]]:
             return None
 
 
-def create_access_token(data: dict, expires_delta: timedelta = None):
+def create_access_token(data: dict, expires_delta: timedelta = None) -> str:
+    """
+    Create an access token.
+
+    Args:
+        data (dict): The data to be encoded into the token.
+        expires_delta (timedelta, optional): The token expiration duration. Defaults to 30 minutes.
+
+    Returns:
+        str: The encoded JWT access token.
+    """
     to_encode = data.copy()
 
     if expires_delta:
