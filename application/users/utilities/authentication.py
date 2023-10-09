@@ -72,13 +72,24 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=30)  # Default expiration time
+        expire = datetime.utcnow() + timedelta(minutes=30)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
 
-def authenticate_user(email: str, password: str):
+def authenticate_user(email: str, password: str) -> Union[Dict[str, Union[str, int]], bool]:
+    """
+    Authenticate a user by email and password.
+
+    Args:
+        email (str): The user's email address.
+        password (str): The user's plaintext password.
+
+    Returns:
+        Union[Dict[str, Union[str, int]], bool]: A dictionary containing user data if authentication
+        is successful, or False if authentication fails.
+    """
     user = get_user(email)
 
     if user == None:
