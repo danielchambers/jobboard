@@ -3,6 +3,7 @@ import jwt
 from typing import Optional, Dict, Union
 from datetime import datetime, timedelta
 from passlib.context import CryptContext
+from fastapi import HTTPException, status
 from application.models.user import User
 from application.database import database_context
 
@@ -102,9 +103,14 @@ def decode_access_token(token: str) -> Optional[Dict[str, str]]:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
     except jwt.ExpiredSignatureError:
-        return None  # Token has expired
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail='Token expired')
     except jwt.DecodeError:
-        return None  # Token is invalid
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail='Invalid token')
+    except jwt.exceptions.InvalidAudienceError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail='Invalid audience')
 
 
 def authenticate_user(email: str, password: str) -> Union[Dict[str, Union[str, int]], bool]:
