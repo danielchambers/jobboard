@@ -1,60 +1,88 @@
 import os
 import jwt
-from typing import Optional, Dict
+from typing import Optional, Dict, Union
 from datetime import datetime, timedelta
 from passlib.context import CryptContext
 from application.models.user import User
+from application.database import database_context
 
 SECRET_KEY = os.getenv('JWT_SECRET')
 ALGORITHM = os.getenv('JWT_ALGORITHM')
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 # Initialize a password context using the bcrypt hashing scheme
 password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
-def hash_password(user_password: str) -> str:
+def hash_password(password: str) -> str:
     """
     Hashes a user's password using the configured CryptContext.
 
     Args:
-        user_password (str): The user's plaintext password.
+        password (str): The user's plaintext password.
 
     Returns:
         str: The hashed password.
     """
-    return password_context.hash(user_password)
+    return password_context.hash(password)
 
 
-def verify_password(user_password: str, user_hash: str) -> bool:
+def verify_password(plain_password: str, hashed_password: str) -> bool:
     """
     Verifies a user's password against a stored hashed password using the configured CryptContext.
 
     Args:
-        user_password (str): The user's plaintext password.
-        user_hash (str): The hashed password to compare against.
+        plain_password (str): The user's plaintext password.
+        hashed_password (str): The hashed password to compare against.
 
     Returns:
-        bool: True if the user_password matches the user_hash, False otherwise.
+        bool: True if the plain_password matches the hashed_password, False otherwise.
     """
-    return password_context.verify(user_password, user_hash)
+    return password_context.verify(plain_password, hashed_password)
+
+
+def get_user(email: str) -> Optional[Dict[str, Union[str, int]]]:
+    """
+    Retrieve a user's data by their email address.
+
+    Args:
+        email (str): The email address of the user to retrieve.
+
+    Returns:
+        dict or None: A dictionary containing user data if the user is found,
+        or None if the user is not found.
+    """
+    with database_context() as db:
+        user = db.query(User).filter(User.email == email).first()
+        if user:
+            return {
+                'id': user.id,
+                'password': user.password,
+                'email': user.email,
+                'is_staff': user.is_staff,
+                'is_member': user.is_member,
+                'is_basic': user.is_basic
+            }
+        else:
+            return None
 
 
 def create_access_token(data: dict, expires_delta: timedelta = None):
     to_encode = data.copy()
+
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=15)  # Default expiration time
+        expire = datetime.utcnow() + timedelta(minutes=30)  # Default expiration time
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
 
-def authenticate_user(db, email: str, password: str):
-    user = db.query(User).filter(User.email == email).first()
-    if not user or not password_context.verify(password, user.password):
-        return None
-    access_token = create_access_token(
-        data={"sub": user.email}, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
-    return access_token
+def authenticate_user(email: str, password: str):
+    user = get_user(email)
+
+    if user == None:
+        return False
+    if not verify_password(password, user['password']):
+        return False
+    return user
