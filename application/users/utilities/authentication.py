@@ -3,15 +3,16 @@ import jwt
 from typing import Optional, Dict, Union
 from datetime import datetime, timedelta
 from passlib.context import CryptContext
-from fastapi import HTTPException, status
+from fastapi import HTTPException, Depends, status
+from fastapi.security import OAuth2PasswordBearer
 from application.models.user import User
 from application.database import database_context
 
 SECRET_KEY = os.getenv('JWT_SECRET')
 ALGORITHM = os.getenv('JWT_ALGORITHM')
 
-# Initialize a password context using the bcrypt hashing scheme
 password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 def hash_password(password: str) -> str:
@@ -132,3 +133,30 @@ def authenticate_user(email: str, password: str) -> Union[Dict[str, Union[str, i
     if not verify_password(password, user['password']):
         return False
     return user
+
+
+def authorize_user(token: str = Depends(oauth2_scheme)):
+    payload = decode_access_token(token)
+    if payload is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired token",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return payload
+
+
+def authorize_member(token: str = Depends(oauth2_scheme)):
+    payload = decode_access_token(token)
+
+    if payload is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired token",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    if not payload["member"]:
+        raise HTTPException(status_code=403, detail="User is not a member")
+
+    return payload
