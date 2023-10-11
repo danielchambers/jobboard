@@ -11,4 +11,3 @@ class User(Base):
     email = Column(String(75), unique=True, index=True)
     is_staff = Column(Boolean, default=False)
     is_member = Column(Boolean, default=False)
-    is_basic = Column(Boolean, default=True)
