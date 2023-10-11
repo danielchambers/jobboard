@@ -136,7 +136,21 @@ def authenticate_user(email: str, password: str) -> Union[Dict[str, Union[str, i
 
 
 def authorize_user(token: str = Depends(oauth2_scheme)):
+    """
+    Authorize a user based on an access token.
+
+    Args:
+        token (str): The JWT access token.
+
+    Returns:
+        dict: The payload extracted from the token if authorization is successful.
+
+    Raises:
+        HTTPException: If the token is invalid or expired, a 401 Unauthorized response is raised.
+
+    """
     payload = decode_access_token(token)
+
     if payload is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -147,6 +161,20 @@ def authorize_user(token: str = Depends(oauth2_scheme)):
 
 
 def authorize_member(token: str = Depends(oauth2_scheme)):
+    """
+    Authorize a user as a member based on an access token.
+
+    Args:
+        token (str): The JWT access token.
+
+    Returns:
+        dict: The payload extracted from the token if authorization is successful.
+
+    Raises:
+        HTTPException: If the token is invalid or expired, a 401 Unauthorized response is raised.
+                      If the user is not a member (based on the token payload), a 403 Forbidden response is raised.
+
+    """
     payload = decode_access_token(token)
 
     if payload is None:
