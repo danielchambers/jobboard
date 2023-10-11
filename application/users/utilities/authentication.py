@@ -61,8 +61,7 @@ def get_user(email: str) -> Optional[Dict[str, Union[str, int]]]:
                 'password': user.password,
                 'email': user.email,
                 'is_staff': user.is_staff,
-                'is_member': user.is_member,
-                'is_basic': user.is_basic
+                'is_member': user.is_member
             }
         else:
             return None
