@@ -22,7 +22,7 @@ class UserJobWatched(Base):
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    job_id = Column(String(100), nullable=False)
+    job_id = Column(String(100), nullable=False, unique=True)
     platform = Column(String(75), nullable=False)
     date_added = Column(TIMESTAMP, default=func.now())
     user = relationship("User", back_populates="jobs_watched")
@@ -33,7 +33,7 @@ class UserJobApplied(Base):
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    job_id = Column(String(100), nullable=False)
+    job_id = Column(String(100), nullable=False, unique=True)
     platform = Column(String(75), nullable=False)
     date_added = Column(TIMESTAMP, default=func.now())
     rejected = Column(Boolean, default=False)
