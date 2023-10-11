@@ -2,7 +2,11 @@ import os
 from fastapi import APIRouter, Depends, HTTPException
 from datetime import timedelta
 from application.database import database_context
-from application.models.user import User
+from application.models.user import (
+    User,
+    UserJobWatched,
+    UserJobApplied
+)
 from application.users.schemas.authentication import UserLogin, UserRegistration
 from application.users.utilities.authentication import (
     create_access_token,
@@ -74,22 +78,35 @@ async def login_user(user_data: UserLogin):
             status_code=401, detail='Invalid email or password.')
 
     jwt_data = {
+        'id': valid_user['id'],
         'sub': valid_user['email'],
         'iss': 'api:login',
         'staff': valid_user['is_staff'],
         'member': valid_user['is_member'],
-        'basic': valid_user['is_basic'],
     }
     jwt_expiration = timedelta(minutes=30)
     access_token = create_access_token(jwt_data, jwt_expiration)
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@users_router.get("/test")
+@users_router.get("/jobs/save")
 async def secure_test(current_user: dict = Depends(authorize_user)):
-    return {"message": "This is a secured route for users", "user": current_user}
+    user_id = current_user['id']
+    job_id = '317cf942-1fb9-4b77-8e76-342b2965adce'
+    platform = 'lever'
+    with database_context() as db:
+        existing_user = db.query(User).filter(User.id == user_id).first()
+        job = UserJobWatched(user_id=user_id, job_id=job_id, platform=platform)
+        existing_user.jobs_watched.append(job)
+        db.add(job)
+    return {"message": "Job saved!", "user": current_user}
 
 
-@users_router.get("/test2")
-async def secure_test2(current_user: dict = Depends(authorize_member)):
-    return {"message": "This is a secured route for members", "member": current_user}
+@users_router.get("/jobs/saved")
+async def secure_test2(current_user: dict = Depends(authorize_user)):
+    user_id = current_user['id']
+    with database_context() as db:
+        existing_user = db.query(User).filter(User.id == user_id).first()
+        jobs = [{'jobs': job.job_id, 'platform': job.platform}
+                for job in existing_user.jobs_watched]
+        return {"jobs": jobs, "user": current_user}
